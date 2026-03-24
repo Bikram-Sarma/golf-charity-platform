@@ -44,7 +44,8 @@ export default function DashboardPage() {
         .from("scores")
         .select("id, score, created_at")
         .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .limit(5);
 
       setScores(scoresData || []);
     };
@@ -95,11 +96,19 @@ export default function DashboardPage() {
       .from("scores")
       .select("id, score, created_at")
       .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .limit(5);
 
     setScores(scoresData || []);
     setNewScore("");
   };
+
+  const averageScore =
+    scores.length > 0
+      ? (
+          scores.reduce((total, item) => total + item.score, 0) / scores.length
+        ).toFixed(2)
+      : null;
 
   return (
     <div className="min-h-screen p-8">
@@ -135,8 +144,17 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        <div className="mt-8 rounded-xl border p-4">
+          <h2 className="mb-2 text-xl font-semibold">Latest 5 Scores Average</h2>
+          {averageScore ? (
+            <p className="text-lg font-medium">{averageScore}</p>
+          ) : (
+            <p>No scores available yet.</p>
+          )}
+        </div>
+
         <div className="mt-8">
-          <h2 className="mb-3 text-xl font-semibold">My Scores</h2>
+          <h2 className="mb-3 text-xl font-semibold">Latest 5 Scores</h2>
           {scores.length > 0 ? (
             <div className="space-y-3">
               {scores.map((item) => (
